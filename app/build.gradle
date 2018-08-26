@@ -30,6 +30,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    // Specifies one flavor dimension.
+    flavorDimensions "version"
+    productFlavors {
+        free {
+            dimension "version"
+            applicationIdSuffix ".free"
+            versionNameSuffix "-free"
+            buildConfigField 'boolean', 'IS_PAID', 'false'
+        }
+        paid {
+            dimension "version"
+            applicationIdSuffix ".paid"
+            versionNameSuffix "-paid"
+            buildConfigField 'boolean', 'IS_PAID', 'true'
+        }
+    }
 }
 
 dependencies {
@@ -46,4 +62,7 @@ dependencies {
     })
 
     testImplementation 'junit:junit:4.12'
+
+    implementation project(':jokes')
+    implementation project(':jokedisplay')
 }

@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">What a Joke!</string>
-    <string name="error">No joke provided. The joke is on you!</string>
+    <string name="error">No joke loaded. The joke is on me!</string>
 </resources>

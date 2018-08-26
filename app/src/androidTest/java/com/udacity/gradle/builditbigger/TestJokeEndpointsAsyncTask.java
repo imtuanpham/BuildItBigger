@@ -3,22 +3,23 @@ package com.udacity.gradle.builditbigger;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-
-import com.udacity.gradle.builditbigger.MainActivity;
+import android.util.Log;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
+import java.util.concurrent.CountDownLatch;
+import com.udacity.gradle.builditbigger.MainActivity.JokeEndpointsAsyncTask;
 
-/**
- * Following tests
- * 1) parseSandwichJson
- */
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+
+
 @RunWith(AndroidJUnit4.class)
 public class TestJokeEndpointsAsyncTask {
+
+    public static final String LOG_TAG = TestJokeEndpointsAsyncTask.class.getSimpleName();
 
 
     @Before
@@ -27,17 +28,25 @@ public class TestJokeEndpointsAsyncTask {
     }
 
     @Test
-    public void testJokeEndpointsAsyncTask() {
+    public void testJokeEndpointsAsyncTask() throws InterruptedException {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
-        new TestAsyncTask().execute(appContext);
-    }
+        final CountDownLatch latch = new CountDownLatch(1);
 
-    public static class TestAsyncTask extends MainActivity.JokeEndpointsAsyncTask {
-        @Override
-        protected void onPostExecute(String joke) {
-            assert joke.length() != 0;
-        }
+        JokeEndpointsAsyncTask testTask = new JokeEndpointsAsyncTask() {
+            @Override
+            protected void onPostExecute(String joke) {
+                assertNotNull(joke);
+                if (joke != null){
+                    assertTrue(joke.length() > 0);
+                    latch.countDown();
+                }
+            }
+        };
+
+        testTask.execute(appContext);
+
+        latch.await();
     }
 
 }
